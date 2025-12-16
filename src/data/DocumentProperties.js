@@ -85,7 +85,7 @@ export default class DocumentProperties {
             'pageFormat', 'pageWidth', 'pageHeight', 'unit', 'orientation',
             'contentHeight', 'marginLeft', 'marginTop', 'marginRight', 'marginBottom',
             'header', 'headerSize', 'headerDisplay', 'footer', 'footerSize', 'footerDisplay',
-            'watermark', 'patternLocale', 'patternCurrencySymbol', 'patternNumberGroupSymbol',
+            'patternLocale', 'patternCurrencySymbol', 'patternNumberGroupSymbol',
         ];
     }
 

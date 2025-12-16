@@ -105,6 +105,10 @@ export default class DocElementPanel extends PanelBase {
                 'type': SetValueCmd.type.text,
                 'fieldId': 'colspan'
             },
+            'rowspan': {
+                'type': SetValueCmd.type.text,
+                'fieldId': 'rowspan'
+            },
             'format': {
                 'type': SetValueCmd.type.select,
                 'fieldId': 'format',
@@ -1353,6 +1357,52 @@ export default class DocElementPanel extends PanelBase {
         elFormField.append(elColspan);
         elFormField.append(
             utils.createElement('div', { id: 'rbro_doc_element_colspan_error', class: 'rbroErrorMessage' })
+        );
+        elDiv.append(elFormField);
+        panel.append(elDiv);
+
+        elFormField.append(
+            utils.createElement('div', { id: 'rbro_doc_element_colspan_error', class: 'rbroErrorMessage' })
+        );
+        panel.append(elDiv);
+        elDiv = utils.createElement('div', { id: 'rbro_doc_element_rowspan_row', class: 'rbroFormRow' });
+        utils.appendLabel(elDiv, this.rb.getLabel('docElementRowspan'), 'rbro_doc_element_rowspan');
+        elFormField = utils.createElement('div', { class: 'rbroFormField' });
+        let elRowspan = utils.createElement(
+            'input', { id: 'rbro_doc_element_rowspan', type: 'number', autocomplete: 'off' });
+        elRowspan.addEventListener('change', (event) => {
+            let val = elRowspan.value.trim();
+            if (val !== '') {
+                val = utils.checkInputDecimal(val, 1, 9);
+            }
+            if (val !== elRowspan.value) {
+                elRowspan.value = val;
+            }
+            let selectedObjects = this.rb.getSelectedObjects();
+            let valueChanged = false;
+            for (let i=selectedObjects.length - 1; i >= 0; i--) {
+                if (selectedObjects[i].getValue('rowspan') !== val) {
+                    valueChanged = true;
+                    break;
+                }
+            }
+
+            if (valueChanged) {
+                let cmdGroup = new CommandGroupCmd('Set value', this.rb);
+                for (let i=selectedObjects.length - 1; i >= 0; i--) {
+                    let obj = selectedObjects[i];
+                    cmdGroup.addSelection(obj.getId());
+                    cmdGroup.addCommand(new SetValueCmd(
+                        obj.getId(), 'rowspan', val, SetValueCmd.type.text, this.rb));
+                }
+                if (!cmdGroup.isEmpty()) {
+                    this.rb.executeCommand(cmdGroup);
+                }
+            }
+        });
+        elFormField.append(elRowspan);
+        elFormField.append(
+            utils.createElement('div', { id: 'rbro_doc_element_rowspan_error', class: 'rbroErrorMessage' })
         );
         elDiv.append(elFormField);
         panel.append(elDiv);
