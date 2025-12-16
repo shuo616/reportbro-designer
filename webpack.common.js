@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 module.exports = {
-  entry: ['./src/main.js', './src/main.css', './src/fonts/font_style.css', './src/iconfonts/style.css', './src/toggle-switch.css', './src/quill.reportbro.css'],
+  entry: ['./src/index.js', './src/fonts/font_style.css', './src/iconfonts/style.css', './src/toggle-switch.css', './src/quill.reportbro.css'],
   output: {
     filename: 'reportbro.js',
     path: path.resolve(__dirname, 'dist'),
