@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 const banner =
 `Copyright (C) 2025 jobsta
@@ -21,7 +22,7 @@ https://www.reportbro.com/framework/license_agreement
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'source-map',
+  devtool: false,
   output: {
 		clean: true,
   },
@@ -40,5 +41,9 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.BannerPlugin({ banner: banner, test: 'reportbro.js' }),
+    new HtmlWebPackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+    }),
   ]
 });
