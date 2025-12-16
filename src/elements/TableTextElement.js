@@ -17,13 +17,16 @@ export default class TableTextElement extends TextElement {
         this.elContentText = null;
         this.elContentTextData = null;
         this.colspan = initialData.colspan || '';
+        this.rowspan = initialData.rowspan || '';
         this.colspanVal = 1;
+        this.rowspanVal = 1;
         this.columnIndex = initialData.columnIndex;
         this.parentId = initialData.parentId;
         this.tableId = initialData.tableId;
         this.displayWidth = this.widthVal;
         this.lastTouchStartTime = 0;
         this.updateColspanVal();
+        this.updateRowspanVal();
     }
 
     setInitialData(initialData) {
@@ -104,6 +107,12 @@ export default class TableTextElement extends TextElement {
             this.updateDisplayInternalNotify(0, 0, this.displayWidth, this.heightVal, false);
         } else if (field === 'colspan') {
             this.updateColspanVal();
+            let tableObj = this.rb.getDataObject(this.tableId);
+            if (tableObj !== null) {
+                tableObj.updateColumnDisplay();
+            }
+        } else if (field === 'rowspan') {
+            this.updateRowspanVal();
             let tableObj = this.rb.getDataObject(this.tableId);
             if (tableObj !== null) {
                 tableObj.updateColumnDisplay();
@@ -211,6 +220,17 @@ export default class TableTextElement extends TextElement {
         }
     }
 
+    updateRowspanVal() {
+        this.rowspanVal = utils.convertInputToNumber(this.rowspan);
+        if (this.rowspanVal <= 0) {
+            this.rowspanVal = 1;
+        }
+        this.heightVal *= this.rowspanVal;
+        if (this.el !== null) {
+            this.el.setAttribute('rowspan', this.rowspanVal);
+        }
+    }
+
     /**
      * Returns all data fields of this object. The fields are used when serializing the object.
      * @returns {String[]}
@@ -228,7 +248,7 @@ export default class TableTextElement extends TextElement {
      */
     getProperties() {
         let fields = [
-            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan',
+            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan', 'rowspan',
             'styleId', 'bold', 'italic', 'underline', 'strikethrough',
             'horizontalAlignment', 'verticalAlignment', 'textColor', 'backgroundColor',
             'font', 'fontSize', 'lineSpacing',
@@ -269,7 +289,6 @@ export default class TableTextElement extends TextElement {
         let contentSize = this.getContentSize(width, height, this.getStyle());
         this.elContentText.style.width = this.rb.toPixel(contentSize.width);
         this.elContentText.style.height = this.rb.toPixel(contentSize.height);
-
         if (notifyTableElement) {
             let tableObj = this.rb.getDataObject(this.tableId);
             if (tableObj !== null) {
@@ -388,6 +407,9 @@ export default class TableTextElement extends TextElement {
 
         if (this.colspanVal > 1) {
             this.el.setAttribute('colspan', this.colspanVal);
+        }
+        if (this.rowspanVal > 1) {
+            this.el.setAttribute('rowspan', this.rowspanVal);
         }
         document.getElementById(`rbro_el_table_band${this.parentId}`).append(this.el);
         document.getElementById(`rbro_el_content_text_data${this.id}`).textContent = this.content;

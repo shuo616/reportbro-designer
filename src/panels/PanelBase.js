@@ -66,7 +66,6 @@ export default class PanelBase {
 
     setValue(propertyDescriptor, value, differentValues) {
         let propertyId = `${this.idPrefix}_${propertyDescriptor['fieldId']}`;
-
         if (differentValues) {
             document.getElementById(propertyId).classList.add('rbroDifferentValues');
         } else {

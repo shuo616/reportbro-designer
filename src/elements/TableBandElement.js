@@ -281,10 +281,15 @@ export default class TableBandElement extends DocElement {
      * Update display of columns depending on column span value of preceding columns.
      * e.g. if a column has column span value of 3 then the next two columns will be hidden.
      */
-    updateColumnDisplay() {
+    updateColumnDisplay(rowSpanIndices = []) {
         let i = 0;
         while (i < this.columnData.length) {
             let colData = this.columnData[i];
+            if (rowSpanIndices.includes(colData.id)) {
+                this.columnData[i].getElement().style.display = 'none';
+                i++;
+                continue;
+            }
             let colWidth = colData.getValue('widthVal');
             let colSpan = colData.getValue('colspanVal');
             colData.getElement().style.display = '';
