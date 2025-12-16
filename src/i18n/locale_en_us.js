@@ -21,6 +21,7 @@ const locale_en = {
     docElementBorderRow: 'Row',
     docElementColor: 'Color',
     docElementColspan: 'Colspan',
+    docElementRowspan: 'Rowspan',
     docElementColumns: 'Columns',
     docElementConditionalStyle: 'Conditional style',
     docElementConditionalStyleCondition: 'Condition',
