@@ -28,7 +28,6 @@ export default class TableElement extends DocElement {
         this.spreadsheet_hide = false;
         this.spreadsheet_column = '';
         this.spreadsheet_addEmptyRow = false;
-        this.rowSpanIndices = [];
 
         this.setInitialData(initialData);
 
@@ -84,7 +83,7 @@ export default class TableElement extends DocElement {
         if ((band === 'header' && !this.header) || (band === 'footer' && !this.footer)) {
             panelItemProperties.visible = false;
         }
-        let bandElement = new TableBandElement(dataId, data, band, this.rb, this.rowSpanIndices);
+        let bandElement = new TableBandElement(dataId, data, band, this.rb);
         this.rb.addDataObject(bandElement);
         let panelItemBand = new MainPanelItem('tableBand', this.panelItem, bandElement, panelItemProperties, this.rb);
         bandElement.setPanelItem(panelItemBand);
@@ -323,38 +322,17 @@ export default class TableElement extends DocElement {
         }
     }
 
-    updateRowSpanIndices() {
-        const rowSpanIndices = [];
-        this.contentDataRows.forEach((row, rowIndex) => {
-            row.columnData.forEach((col, index) => {
-                const id = this.contentDataRows[rowIndex].columnData[index].id;
-                if (rowSpanIndices.includes(id)) {
-                    return;
-                }
-                const rowspan = col.getValue('rowspan');
-                if (rowspan > 1) {
-                    const maxSpan = rowIndex + Math.min(rowspan, this.contentDataRows.length - 1);
-                    for(let i = rowIndex + 1; i < maxSpan; i++) {
-                        rowSpanIndices.push(this.contentDataRows[i].columnData[index].id);
-                    }
-                }
-            });
-        });
-        this.rowSpanIndices = rowSpanIndices;
-    }
-
     /**
      * Update display of columns of all bands depending on column span value of preceding columns.
      * e.g. if a column has column span value of 3 then the next two columns will be hidden.
      */
     updateColumnDisplay() {
         if (this.setupComplete) {
-            this.updateRowSpanIndices();
             this.headerData.updateColumnDisplay();
             for (let i=0; i < this.contentDataRows.length; i++) {
-                this.contentDataRows[i].updateColumnDisplay(this.rowSpanIndices);
+                this.contentDataRows[i].updateColumnDisplay();
             }
-            this.footerData.updateColumnDisplay(this.rowSpanIndices);
+            this.footerData.updateColumnDisplay();
         }
     }
 
@@ -433,6 +411,28 @@ export default class TableElement extends DocElement {
             }
         }
         return -1;
+    }
+
+    updateRelatedCells(cell) {
+        let colspan = cell.getValue('colspanVal');
+        let rowspan = cell.getValue('rowspanVal');
+        const currentColumnIndex = cell.getValue('columnIndex');
+        const tableRow = this.rb.getDataObject(cell.parentId);
+        const currentRowIndex = this.getContentRowIndex(tableRow);
+        this.contentDataRows.forEach((row, rowIndex) => {
+            const maxColspan = Math.min(currentColumnIndex + colspan, row.columnData.length);
+            const maxRowspan = Math.min(currentRowIndex + rowspan, this.contentDataRows.length);
+            row.columnData.forEach((column, columnIndex) => {
+                column.setValue('shouldDisplay', true);
+                if (rowIndex === currentRowIndex && columnIndex > currentColumnIndex && columnIndex < maxColspan) {
+                    column.setValue('shouldDisplay', false);
+                    return;
+                }
+                if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
+                    column.setValue('shouldDisplay', false);
+                }
+            });
+        });
     }
 
     addChildren(docElements) {
