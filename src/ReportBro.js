@@ -112,9 +112,6 @@ export default class ReportBro {
                 }
             }
         }
-        //todo init from remote
-
-        this.initFromRemote();
         if (this.properties.additionalFonts.length > 0) {
             this.properties.fonts = this.properties.fonts.concat(this.properties.additionalFonts);
         }
@@ -533,10 +530,6 @@ export default class ReportBro {
 
         this.render();
         this.setup();
-    }
-
-    initFromRemote() {
-
     }
 
     /**

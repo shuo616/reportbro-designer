@@ -25,8 +25,11 @@ export default class TableTextElement extends TextElement {
         this.tableId = initialData.tableId;
         this.displayWidth = this.widthVal;
         this.lastTouchStartTime = 0;
+        this.shouldDisplay = initialData.shouldDisplay ?? true;
+        this.shouldDisplayVal = this.shouldDisplay;
         this.updateColspanVal();
         this.updateRowspanVal();
+        this.updateShouldDisplayVal();
     }
 
     setInitialData(initialData) {
@@ -109,14 +112,18 @@ export default class TableTextElement extends TextElement {
             this.updateColspanVal();
             let tableObj = this.rb.getDataObject(this.tableId);
             if (tableObj !== null) {
+                tableObj.updateRelatedCells(this);
                 tableObj.updateColumnDisplay();
             }
         } else if (field === 'rowspan') {
             this.updateRowspanVal();
             let tableObj = this.rb.getDataObject(this.tableId);
             if (tableObj !== null) {
+                tableObj.updateRelatedCells(this);
                 tableObj.updateColumnDisplay();
             }
+        } else if (field === 'shouldDisplay') {
+            this.updateShouldDisplayVal();
         }
     }
 
@@ -221,14 +228,19 @@ export default class TableTextElement extends TextElement {
     }
 
     updateRowspanVal() {
+        const oldRowspanVal = this.rowspanVal;
         this.rowspanVal = utils.convertInputToNumber(this.rowspan);
         if (this.rowspanVal <= 0) {
             this.rowspanVal = 1;
         }
-        this.heightVal *= this.rowspanVal;
+        this.heightVal = ( this.heightVal / oldRowspanVal ) * this.rowspanVal;
         if (this.el !== null) {
             this.el.setAttribute('rowspan', this.rowspanVal);
         }
+    }
+
+    updateShouldDisplayVal() {
+        this.shouldDisplayVal = this.shouldDisplay;
     }
 
     /**
@@ -248,7 +260,7 @@ export default class TableTextElement extends TextElement {
      */
     getProperties() {
         let fields = [
-            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan', 'rowspan',
+            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan', 'rowspan', 'shouldDisplay',
             'styleId', 'bold', 'italic', 'underline', 'strikethrough',
             'horizontalAlignment', 'verticalAlignment', 'textColor', 'backgroundColor',
             'font', 'fontSize', 'lineSpacing',

@@ -281,30 +281,24 @@ export default class TableBandElement extends DocElement {
      * Update display of columns depending on column span value of preceding columns.
      * e.g. if a column has column span value of 3 then the next two columns will be hidden.
      */
-    updateColumnDisplay(rowSpanIndices = []) {
+    updateColumnDisplay() {
         let i = 0;
         while (i < this.columnData.length) {
             let colData = this.columnData[i];
-            if (rowSpanIndices.includes(colData.id)) {
-                this.columnData[i].getElement().style.display = 'none';
-                i++;
-                continue;
-            }
             let colWidth = colData.getValue('widthVal');
             let colSpan = colData.getValue('colspanVal');
-            colData.getElement().style.display = '';
             if (colSpan > 1) {
-                let colspanEndIndex = ((i + colSpan) < this.columnData.length) ? (i + colSpan) : this.columnData.length;
+                let colspanEndIndex = Math.min((i + colSpan), this.columnData.length);
                 i++;
                 // hide columns within colspan
                 while (i < colspanEndIndex) {
                     colWidth += this.columnData[i].getValue('widthVal');
-                    this.columnData[i].getElement().style.display = 'none';
+                    this.columnData[i].getElement().style.display = this.columnData[i].getValue('shouldDisplayVal') ? '' : 'none';
                     i++;
                 }
-            } else {
-                i++;
             }
+            colData.getElement().style.display = colData.getValue('shouldDisplayVal') ? '' : 'none';
+            i++;
             colData.setDisplayWidth(colWidth);
             colData.updateDisplay();
         }
