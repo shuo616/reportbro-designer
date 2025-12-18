@@ -8,9 +8,11 @@ const initialize = (options, report = null) => {
     if(report) {
         rb.load(report);
     }
+    return rb;
 }
 (() => {
     fetchTemplate('purchase_order').then((response) => {
+        let rb;
         if (response.data) {
             const report = response.data.report;
             const url = new URL(window.location.href);
@@ -42,7 +44,7 @@ const initialize = (options, report = null) => {
                 },
                 localeKey: lang === 'zh' ? 'zh_cn' : 'en_us',
             }
-            initialize(reportBroOptions, report);
+            rb = initialize(reportBroOptions, report);
         }
     }).catch(function () {
         alert('Error fetch init data');
