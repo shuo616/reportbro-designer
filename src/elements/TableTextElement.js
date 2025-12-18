@@ -227,11 +227,16 @@ export default class TableTextElement extends TextElement {
         if (this.rowspanVal <= 0) {
             this.rowspanVal = 1;
         }
-        this.heightVal = ( this.heightVal / oldRowspanVal ) * this.rowspanVal;
+        const tableRow = this.rb.getDataObject(this.parentId);
+        const tableObj = this.rb.getDataObject(this.tableId);
+        const currentRowIndex = tableObj.getContentRowIndex(tableRow);
+        const maxRowspan = Math.min(this.rowspanVal, tableObj.getValue('contentDataRows').length - currentRowIndex);
+        this.heightVal = (this.heightVal / oldRowspanVal) * maxRowspan;
         if (this.el !== null) {
             this.el.setAttribute('rowspan', this.rowspanVal);
         }
     }
+
     /**
      * Returns all data fields of this object. The fields are used when serializing the object.
      * @returns {String[]}
@@ -298,7 +303,7 @@ export default class TableTextElement extends TextElement {
                 // calculate table width
                 let newTableWidth = width;
                 let cellWidths = tableBandObj.getSingleCellWidths();
-                for (let i=0; i < cellWidths.length; i++) {
+                for (let i = 0; i < cellWidths.length; i++) {
                     if (i < this.columnIndex || i >= (this.columnIndex + this.colspanVal)) {
                         newTableWidth += cellWidths[i];
                     }
@@ -397,12 +402,12 @@ export default class TableTextElement extends TextElement {
     }
 
     createElement() {
-        this.el = utils.createElement('td', { id: `rbro_el${this.id}`, class: 'rbroTableTextElement' });
+        this.el = utils.createElement('td', {id: `rbro_el${this.id}`, class: 'rbroTableTextElement'});
         this.elContent = utils.createElement(
-            'div', { id: `rbro_el_content${this.id}`, class: 'rbroContentContainerHelper' });
+            'div', {id: `rbro_el_content${this.id}`, class: 'rbroContentContainerHelper'});
         this.elContentText = utils.createElement(
-            'div', { id: `rbro_el_content_text${this.id}`, class: 'rbroDocElementContentText' });
-        this.elContentTextData = utils.createElement('span', { id: `rbro_el_content_text_data${this.id}` });
+            'div', {id: `rbro_el_content_text${this.id}`, class: 'rbroDocElementContentText'});
+        this.elContentTextData = utils.createElement('span', {id: `rbro_el_content_text_data${this.id}`});
         this.elContentText.append(this.elContentTextData);
         this.elContent.append(this.elContentText);
         this.el.append(this.elContent);
@@ -464,7 +469,7 @@ export default class TableTextElement extends TextElement {
 
                 // add a column to each table band
                 table.getValue('headerData').createColumns(columns, true, colIndex, left);
-                for (let i=0; i < table.getValue('contentDataRows').length; i++) {
+                for (let i = 0; i < table.getValue('contentDataRows').length; i++) {
                     table.getValue('contentDataRows')[i].createColumns(columns, true, colIndex, left);
                 }
                 table.getValue('footerData').createColumns(columns, true, colIndex, left);
@@ -507,7 +512,7 @@ export default class TableTextElement extends TextElement {
 
                 // remove column from each table band
                 table.getValue('headerData').deleteColumn(colIndex);
-                for (let i=0; i < table.getValue('contentDataRows').length; i++) {
+                for (let i = 0; i < table.getValue('contentDataRows').length; i++) {
                     table.getValue('contentDataRows')[i].deleteColumn(colIndex);
                 }
                 table.getValue('footerData').deleteColumn(colIndex);
