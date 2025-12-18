@@ -283,22 +283,27 @@ export default class TableBandElement extends DocElement {
      */
     updateColumnDisplay() {
         let i = 0;
+        let tableObj = this.rb.getDataObject(this.parentId);
         while (i < this.columnData.length) {
             let colData = this.columnData[i];
             let colWidth = colData.getValue('widthVal');
             let colSpan = colData.getValue('colspanVal');
+            colData.getElement().style.display = colData.getValue('show') ? '' : 'none';
             if (colSpan > 1) {
                 let colspanEndIndex = Math.min((i + colSpan), this.columnData.length);
                 i++;
                 // hide columns within colspan
                 while (i < colspanEndIndex) {
                     colWidth += this.columnData[i].getValue('widthVal');
-                    this.columnData[i].getElement().style.display = this.columnData[i].getValue('shouldDisplayVal') ? '' : 'none';
+                    this.columnData[i].getElement().style.display = 'none';
                     i++;
                 }
             }
-            colData.getElement().style.display = colData.getValue('shouldDisplayVal') ? '' : 'none';
+            let rowSpan = colData.getValue('rowspanVal');
             i++;
+            if (rowSpan > 1) {
+                tableObj.updateRelatedCells(colData);
+            }
             colData.setDisplayWidth(colWidth);
             colData.updateDisplay();
         }

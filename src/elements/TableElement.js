@@ -406,7 +406,7 @@ export default class TableElement extends DocElement {
      */
     getContentRowIndex(row) {
         for (let i=0; i < this.contentDataRows.length; i++) {
-            if (row === this.contentDataRows[i]) {
+            if (row === this.contentDataRows[i] || row.id === this.contentDataRows[i].id) {
                 return i;
             }
         }
@@ -419,20 +419,25 @@ export default class TableElement extends DocElement {
         const currentColumnIndex = cell.getValue('columnIndex');
         const tableRow = this.rb.getDataObject(cell.parentId);
         const currentRowIndex = this.getContentRowIndex(tableRow);
-        this.contentDataRows.forEach((row, rowIndex) => {
-            const maxColspan = Math.min(currentColumnIndex + colspan, row.columnData.length);
-            const maxRowspan = Math.min(currentRowIndex + rowspan, this.contentDataRows.length);
-            row.columnData.forEach((column, columnIndex) => {
-                column.setValue('shouldDisplay', true);
-                if (rowIndex === currentRowIndex && columnIndex > currentColumnIndex && columnIndex < maxColspan) {
-                    column.setValue('shouldDisplay', false);
-                    return;
-                }
-                if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
-                    column.setValue('shouldDisplay', false);
-                }
+        if (currentRowIndex !== -1) {
+            this.contentDataRows.forEach((row, rowIndex) => {
+                const maxColspan = Math.min(currentColumnIndex + colspan, row.columnData.length);
+                const maxRowspan = Math.min(currentRowIndex + rowspan, this.contentDataRows.length);
+                row.columnData.forEach((column, columnIndex) => {
+                    if (typeof column.setValue === 'function') {
+                        column.setValue('show', true);
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
+                            column.setValue('show', false);
+                        }
+                    } else {
+                        column.show = true;
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
+                            column.show = false;
+                        }
+                    }
+                });
             });
-        });
+        }
     }
 
     addChildren(docElements) {
