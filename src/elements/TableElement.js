@@ -1,7 +1,6 @@
 import DocElement from './DocElement';
 import TableBandElement from './TableBandElement';
 import AddDeleteDocElementCmd from '../commands/AddDeleteDocElementCmd';
-import Parameter from '../data/Parameter';
 import MainPanelItem from '../menu/MainPanelItem';
 import * as utils from '../utils';
 
@@ -45,7 +44,7 @@ export default class TableElement extends DocElement {
             contentRows = 1;
         }
         let contentDataRows = [];
-        for (let i=0; i < contentRows; i++) {
+        for (let i = 0; i < contentRows; i++) {
             contentDataRows.push(this.createBand('content', i, null));
         }
         this.contentDataRows = contentDataRows;
@@ -63,7 +62,7 @@ export default class TableElement extends DocElement {
         let data;
         let dataKey = band + (band === 'content' ? 'DataRows' : 'Data');
         let dataId;
-        let panelItemProperties = { hasChildren: true, showDelete: false };
+        let panelItemProperties = {hasChildren: true, showDelete: false};
         if (dataValues) {
             data = dataValues;
         } else if (this[dataKey] && (band !== 'content' || (index !== -1 && index < this[dataKey].length))) {
@@ -112,7 +111,7 @@ export default class TableElement extends DocElement {
         if (tempId > maxId) {
             maxId = tempId;
         }
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             tempId = this.contentDataRows[i].getMaxId();
             if (tempId > maxId) {
                 maxId = tempId;
@@ -166,7 +165,7 @@ export default class TableElement extends DocElement {
         let elTable = this.el.querySelector('table');
         let i;
         if (this.border === TableElement.border.grid || this.border === TableElement.border.frameRow ||
-                this.border === TableElement.border.frame) {
+            this.border === TableElement.border.frame) {
             elTable.style.borderStyle = 'solid';
             elTable.style.borderWidth = this.borderWidthVal + 'px';
             elTable.style.borderColor = this.borderColor;
@@ -175,7 +174,7 @@ export default class TableElement extends DocElement {
         }
         let borderStyle = '', borderWidth = '', borderColor = '';
         if (this.border === TableElement.border.grid || this.border === TableElement.border.frameRow ||
-                this.border === TableElement.border.row) {
+            this.border === TableElement.border.row) {
             borderStyle = 'solid none solid none';
             borderWidth = this.borderWidthVal + 'px';
             borderColor = this.borderColor;
@@ -186,7 +185,7 @@ export default class TableElement extends DocElement {
         elHeader.style.borderStyle = borderStyle;
         elHeader.style.borderWidth = borderWidth;
         elHeader.style.borderColor = borderColor;
-        for (i=0; i < this.contentDataRows.length; i++) {
+        for (i = 0; i < this.contentDataRows.length; i++) {
             const elRow = this.contentDataRows[i].getElement();
             elRow.style.borderStyle = borderStyle;
             elRow.style.borderWidth = borderWidth;
@@ -209,7 +208,7 @@ export default class TableElement extends DocElement {
             elTd.style.borderWidth = borderWidth;
             elTd.style.borderColor = borderColor;
         }
-        for (i=0; i < this.contentDataRows.length; i++) {
+        for (i = 0; i < this.contentDataRows.length; i++) {
             for (const elTd of this.contentDataRows[i].getElement().querySelectorAll('td')) {
                 elTd.style.borderStyle = borderStyle;
                 elTd.style.borderWidth = borderWidth;
@@ -223,8 +222,8 @@ export default class TableElement extends DocElement {
         }
 
         for (const tableClass of [
-                'rbroBorderTableGrid', 'rbroBorderTableFrameRow', 'rbroBorderTableFrame',
-                'rbroBorderTableRow', 'rbroBorderTableNone']) {
+            'rbroBorderTableGrid', 'rbroBorderTableFrameRow', 'rbroBorderTableFrame',
+            'rbroBorderTableRow', 'rbroBorderTableNone']) {
             this.el.classList.remove(tableClass);
         }
         this.el.classList.add('rbroBorderTable' + this.border.charAt(0).toUpperCase() + this.border.slice(1));
@@ -263,7 +262,7 @@ export default class TableElement extends DocElement {
         // create sizers (to indicate selection) which do not support resizing
         for (let sizer of ['NE', 'SE', 'SW', 'NW']) {
             elSizerContainer.append(
-                utils.createElement('div', { class: `rbroSizer rbroSizer${sizer} rbroSizerMove` }));
+                utils.createElement('div', {class: `rbroSizer rbroSizer${sizer} rbroSizerMove`}));
         }
     }
 
@@ -280,11 +279,11 @@ export default class TableElement extends DocElement {
     }
 
     createElement() {
-        this.el = utils.createElement('div', { class: 'rbroDocElement rbroTableElement' });
-        const elTable = utils.createElement('table', { id: `rbro_el_table${this.id}` });
-        elTable.append(utils.createElement('thead', { id: `rbro_el_table_header${this.id}` }));
-        elTable.append(utils.createElement('tbody', { id: `rbro_el_table_content${this.id}` }));
-        elTable.append(utils.createElement('tfoot', { id: `rbro_el_table_footer${this.id}` }));
+        this.el = utils.createElement('div', {class: 'rbroDocElement rbroTableElement'});
+        const elTable = utils.createElement('table', {id: `rbro_el_table${this.id}`});
+        elTable.append(utils.createElement('thead', {id: `rbro_el_table_header${this.id}`}));
+        elTable.append(utils.createElement('tbody', {id: `rbro_el_table_content${this.id}`}));
+        elTable.append(utils.createElement('tfoot', {id: `rbro_el_table_footer${this.id}`}));
         this.el.append(elTable);
         this.appendToContainer();
         this.registerEventHandlers();
@@ -295,7 +294,7 @@ export default class TableElement extends DocElement {
         this.rb.deleteDataObject(this.headerData);
         this.headerData.remove();
         this.headerData = null;
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             this.rb.deleteDataObject(this.contentDataRows[i]);
             this.contentDataRows[i].remove();
         }
@@ -315,7 +314,7 @@ export default class TableElement extends DocElement {
     updateColumnWidth(columnIndex, width) {
         if (this.setupComplete) {
             this.headerData.updateColumnWidth(columnIndex, width);
-            for (let i=0; i < this.contentDataRows.length; i++) {
+            for (let i = 0; i < this.contentDataRows.length; i++) {
                 this.contentDataRows[i].updateColumnWidth(columnIndex, width);
             }
             this.footerData.updateColumnWidth(columnIndex, width);
@@ -329,7 +328,7 @@ export default class TableElement extends DocElement {
     updateColumnDisplay() {
         if (this.setupComplete) {
             this.headerData.updateColumnDisplay();
-            for (let i=0; i < this.contentDataRows.length; i++) {
+            for (let i = 0; i < this.contentDataRows.length; i++) {
                 this.contentDataRows[i].updateColumnDisplay();
             }
             this.footerData.updateColumnDisplay();
@@ -345,7 +344,7 @@ export default class TableElement extends DocElement {
             if (this.header) {
                 height += this.headerData.getHeight();
             }
-            for (let i=0; i < this.contentDataRows.length; i++) {
+            for (let i = 0; i < this.contentDataRows.length; i++) {
                 height += this.contentDataRows[i].getHeight();
             }
             if (this.footer) {
@@ -370,7 +369,7 @@ export default class TableElement extends DocElement {
         if (tableBand !== this.headerData) {
             this.headerData.notifyColumnWidthResized(columnIndex, newColumnWidth);
         }
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             if (tableBand !== this.contentDataRows[i]) {
                 this.contentDataRows[i].notifyColumnWidthResized(columnIndex, newColumnWidth);
             }
@@ -405,7 +404,7 @@ export default class TableElement extends DocElement {
      * @returns {Number} Index of row, -1 if row is not a content row in this table.
      */
     getContentRowIndex(row) {
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             if (row === this.contentDataRows[i] || row.id === this.contentDataRows[i].id) {
                 return i;
             }
@@ -426,12 +425,12 @@ export default class TableElement extends DocElement {
                 row.columnData.forEach((column, columnIndex) => {
                     if (typeof column.setValue === 'function') {
                         column.setValue('show', true);
-                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
                             column.setValue('show', false);
                         }
                     } else {
                         column.show = true;
-                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex < maxColspan) {
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
                             column.show = false;
                         }
                     }
@@ -443,12 +442,12 @@ export default class TableElement extends DocElement {
     addChildren(docElements) {
         let i;
         docElements.push(this.headerData);
-        for (i=0; i < this.contentDataRows.length; i++) {
+        for (i = 0; i < this.contentDataRows.length; i++) {
             docElements.push(this.contentDataRows[i]);
         }
         docElements.push(this.footerData);
         this.headerData.addChildren(docElements);
-        for (i=0; i < this.contentDataRows.length; i++) {
+        for (i = 0; i < this.contentDataRows.length; i++) {
             this.contentDataRows[i].addChildren(docElements);
         }
         this.footerData.addChildren(docElements);
@@ -504,6 +503,7 @@ export default class TableElement extends DocElement {
         }
         return true;
     }
+
     /**
      * Adds commands to command group parameter to recreate table with new column count.
      *
@@ -530,7 +530,7 @@ export default class TableElement extends DocElement {
             this.createSpaceForNewColumns(columns - existingColumns, existingColumns);
         } else if (columns < existingColumns) {
             let usedWidth = 0;
-            for (let i=0; i < columns; i++) {
+            for (let i = 0; i < columns; i++) {
                 usedWidth += this.headerData.getColumn(i).getValue('widthVal');
             }
             // add remaining space to last column
@@ -542,7 +542,7 @@ export default class TableElement extends DocElement {
 
         this.columns = columns;
         this.headerData.createColumns(columns, true, -1, false);
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             this.contentDataRows[i].createColumns(columns, true, -1, false);
         }
         this.footerData.createColumns(columns, true, -1, false);
@@ -578,9 +578,9 @@ export default class TableElement extends DocElement {
         } else {
             let data;
             if (this.contentDataRows.length > 0) {
-                data = { height: this.contentDataRows[this.contentDataRows.length - 1].height, columnData: [] };
+                data = {height: this.contentDataRows[this.contentDataRows.length - 1].height, columnData: []};
                 for (let columnData of this.contentDataRows[0].columnData) {
-                    data.columnData.push({ width: columnData.width });
+                    data.columnData.push({width: columnData.width});
                 }
             }
             for (i = this.contentDataRows.length; i < contentRows; i++) {
@@ -600,7 +600,7 @@ export default class TableElement extends DocElement {
         const rv = super.toJS();
         rv['headerData'] = this.headerData.toJS();
         const contentDataRows = [];
-        for (let i=0; i < this.contentDataRows.length; i++) {
+        for (let i = 0; i < this.contentDataRows.length; i++) {
             contentDataRows.push(this.contentDataRows[i].toJS());
         }
         rv['contentDataRows'] = contentDataRows;
@@ -612,7 +612,7 @@ export default class TableElement extends DocElement {
         for (let bandKey of ['headerData', 'footerData']) {
             TableElement.removeBandIds(data[bandKey]);
         }
-        for (let i=0; i < data.contentDataRows.length; i++) {
+        for (let i = 0; i < data.contentDataRows.length; i++) {
             TableElement.removeBandIds(data.contentDataRows[i]);
         }
     }
