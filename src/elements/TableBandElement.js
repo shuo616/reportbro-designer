@@ -298,9 +298,10 @@ export default class TableBandElement extends DocElement {
                     this.columnData[i].getElement().style.display = 'none';
                     i++;
                 }
+            } else {
+                i++;
             }
             let rowSpan = colData.getValue('rowspanVal');
-            i++;
             if (rowSpan > 1) {
                 tableObj.updateRelatedCells(colData);
             }
