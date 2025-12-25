@@ -23,6 +23,9 @@ const initialize = (options, report = null) => {
                 reportServerUrl: `${baseURL}/report/run`,
                 menuShowButtonLabels: true,
                 adminMode: true,
+                additionalFonts: [
+                    { name: '微软雅黑', value: 'MicrosoftYaHei'},
+                ],
                 // additionalFonts: [ { name: 'Tangerine', value: 'tangerine'}, { name: 'Lobster', value: 'lobster'} ],
                 saveCallback: function (report) {
                     console.log('Saved report', project, user_id, rb.getReport());
