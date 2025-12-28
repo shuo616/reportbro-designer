@@ -20,10 +20,12 @@ export default class TableTextElement extends TextElement {
         this.rowspan = initialData.rowspan || '';
         this.colspanVal = 1;
         this.rowspanVal = 1;
+        this.oldRowspanVal = 1;
+        this.oldColspanVal = 1;
         this.columnIndex = initialData.columnIndex;
         this.parentId = initialData.parentId;
         this.tableId = initialData.tableId;
-        this.show = initialData.show ?? true;
+        this.relatedIds = initialData.relatedIds ?? [];
         this.displayWidth = this.widthVal;
         this.lastTouchStartTime = 0;
         this.updateColspanVal();
@@ -212,6 +214,8 @@ export default class TableTextElement extends TextElement {
     }
 
     updateColspanVal() {
+        this.oldColspanVal = this.colspanVal;
+        this.oldRowspanVal = this.rowspanVal;
         this.colspanVal = utils.convertInputToNumber(this.colspan);
         if (this.colspanVal <= 0) {
             this.colspanVal = 1;
@@ -222,7 +226,8 @@ export default class TableTextElement extends TextElement {
     }
 
     updateRowspanVal() {
-        const oldRowspanVal = this.rowspanVal;
+        this.oldRowspanVal = this.rowspanVal;
+        this.oldColspanVal = this.colspanVal;
         this.rowspanVal = utils.convertInputToNumber(this.rowspan);
         if (this.rowspanVal <= 0) {
             this.rowspanVal = 1;
@@ -231,7 +236,7 @@ export default class TableTextElement extends TextElement {
         const tableObj = this.rb.getDataObject(this.tableId);
         const currentRowIndex = tableObj.getContentRowIndex(tableRow);
         const maxRowspan = Math.min(this.rowspanVal, tableObj.getValue('contentDataRows').length - currentRowIndex);
-        this.heightVal = (this.heightVal / oldRowspanVal) * maxRowspan;
+        this.heightVal = (this.heightVal / this.oldRowspanVal) * maxRowspan;
         if (this.el !== null) {
             this.el.setAttribute('rowspan', this.rowspanVal);
         }
@@ -254,7 +259,7 @@ export default class TableTextElement extends TextElement {
      */
     getProperties() {
         let fields = [
-            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan', 'rowspan', 'show',
+            'xReadOnly', 'width', 'content', 'richText', 'richTextContent', 'richTextHtml', 'eval', 'colspan', 'rowspan', 'relatedIds',
             'styleId', 'bold', 'italic', 'underline', 'strikethrough',
             'horizontalAlignment', 'verticalAlignment', 'textColor', 'backgroundColor',
             'font', 'fontSize', 'lineSpacing',
@@ -411,7 +416,7 @@ export default class TableTextElement extends TextElement {
         this.elContentText.append(this.elContentTextData);
         this.elContent.append(this.elContentText);
         this.el.append(this.elContent);
-        this.el.style.display = this.show ? '' : 'none';
+        this.el.style.display = this.relatedIds.length === 0 ? '' : 'none';
         if (this.colspanVal > 1) {
             this.el.setAttribute('colspan', this.colspanVal);
         }

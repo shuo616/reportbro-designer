@@ -415,28 +415,47 @@ export default class TableElement extends DocElement {
     updateRelatedCells(cell) {
         let colspan = cell.getValue('colspanVal');
         let rowspan = cell.getValue('rowspanVal');
+        let oldRowspan = cell.getValue('oldRowspanVal');
+        let oldColspan = cell.getValue('oldColspanVal');
         const currentColumnIndex = cell.getValue('columnIndex');
         const tableRow = this.rb.getDataObject(cell.parentId);
         const currentRowIndex = this.getContentRowIndex(tableRow);
         if (currentRowIndex !== -1) {
             this.contentDataRows.forEach((row, rowIndex) => {
+                const maxColspan = Math.min(currentColumnIndex + oldColspan, row.columnData.length);
+                const maxRowspan = Math.min(currentRowIndex + oldRowspan, this.contentDataRows.length);
+                row.columnData.forEach((column, columnIndex) => {
+                    if (typeof column.setValue === 'function') {
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
+                            column.setValue('relatedIds', column.relatedIds.filter(id => id !== cell.id));
+                        }
+                    } else {
+                        if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
+                            column.relatedIds = column.relatedIds.filter(id => id !== cell.id);
+                        }
+                    }
+                });
+            });
+            this.contentDataRows.forEach((row, rowIndex) => {
                 const maxColspan = Math.min(currentColumnIndex + colspan, row.columnData.length);
                 const maxRowspan = Math.min(currentRowIndex + rowspan, this.contentDataRows.length);
                 row.columnData.forEach((column, columnIndex) => {
                     if (typeof column.setValue === 'function') {
-                        column.setValue('show', true);
                         if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
-                            column.setValue('show', false);
+                            column.setValue('relatedIds', Array.from(new Set(column.relatedIds.concat(cell.id))));
                         }
                     } else {
-                        column.show = true;
                         if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
-                            column.show = false;
+                            column.relatedIds = Array.from(new Set(column.relatedIds.concat(cell.id)));
                         }
                     }
                 });
             });
         }
+    }
+    // [0, currentRowIndex], [maxRowspan, maxColspan]
+    getCellRelatedMatrix(topLeft, bottomRight) {
+
     }
 
     addChildren(docElements) {

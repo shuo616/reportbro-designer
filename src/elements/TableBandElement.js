@@ -288,7 +288,8 @@ export default class TableBandElement extends DocElement {
             let colData = this.columnData[i];
             let colWidth = colData.getValue('widthVal');
             let colSpan = colData.getValue('colspanVal');
-            colData.getElement().style.display = colData.getValue('show') ? '' : 'none';
+            let relatedIds = colData.getValue('relatedIds');
+            colData.getElement().style.display = relatedIds.length === 0 ? '' : 'none';
             if (colSpan > 1) {
                 let colspanEndIndex = Math.min((i + colSpan), this.columnData.length);
                 i++;
@@ -302,7 +303,7 @@ export default class TableBandElement extends DocElement {
                 i++;
             }
             let rowSpan = colData.getValue('rowspanVal');
-            if (rowSpan > 1) {
+            if (rowSpan >= 1) {
                 tableObj.updateRelatedCells(colData);
             }
             colData.setDisplayWidth(colWidth);
