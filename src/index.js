@@ -49,7 +49,8 @@ const initialize = (options, report = null) => {
             }
             rb = initialize(reportBroOptions, report);
         }
-    }).catch(function () {
+    }).catch(function (err) {
+        console.log(err);
         alert('Error fetch init data');
         initialize({});
     });
