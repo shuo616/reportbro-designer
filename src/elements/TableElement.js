@@ -446,7 +446,7 @@ export default class TableElement extends DocElement {
                         }
                     } else {
                         if (rowIndex > currentRowIndex && rowIndex < maxRowspan && columnIndex >= currentColumnIndex && columnIndex < maxColspan) {
-                            column.relatedIds = Array.from(new Set(column.relatedIds.concat(cell.id)));
+                            column.relatedIds = Array.from(new Set((column.relatedIds || []).concat(cell.id)));
                         }
                     }
                 });
