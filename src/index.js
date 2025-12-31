@@ -19,7 +19,7 @@ const loadFromApi = (lang, project, id) => {
             const reportBroOptions = {
                 reportServerUrl: `${baseURL}/report/run`,
                 menuShowButtonLabels: true,
-                adminMode: true,
+                adminMode: false,
                 additionalFonts: [
                     { name: '微软雅黑', value: 'MicrosoftYaHei'},
                 ],
