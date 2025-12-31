@@ -11,8 +11,8 @@ const initialize = (options, report = null) => {
     return rb;
 };
 const emptyOptions = {styles: [], parameters: [], docElements: [], watermarks: []};
-const loadFromApi = (lang, project, user_id) => {
-    fetchTemplate('purchase_order').then((response) => {
+const loadFromApi = (lang, project, id) => {
+    fetchTemplate(id).then((response) => {
         let rb;
         if (response.data) {
             const report = response.data.report;
@@ -25,10 +25,14 @@ const loadFromApi = (lang, project, user_id) => {
                 ],
                 // additionalFonts: [ { name: 'Tangerine', value: 'tangerine'}, { name: 'Lobster', value: 'lobster'} ],
                 saveCallback: function () {
-                    console.log('Saved report', project, user_id, rb.getReport());
+                    console.log('Saved report', project, id, rb.getReport());
                     saveTemplate({
-                        key: 'purchase_order',
-                        filter: {},
+                        id,
+                        name: report.name,
+                        key: report.key,
+                        filter: report.filter,
+                        project: report.project,
+                        module: report.module,
                         report: rb.getReport()
                     }).then((response) => {
                         if (response.data) {
@@ -82,10 +86,10 @@ const loadFromStorage = (lang) => {
 (() => {
     const url = new URL(window.location.href);
     const project = url.searchParams.get('project');
-    const user_id = url.searchParams.get('user_id');
+    const id = url.searchParams.get('id');
     const lang = url.searchParams.get('lang');
-    if (project && user_id) {
-        loadFromApi(lang, project, user_id);
+    if (project && id) {
+        loadFromApi(lang, project, id);
     } else {
         loadFromStorage(lang);
     }
