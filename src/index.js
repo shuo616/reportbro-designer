@@ -11,7 +11,7 @@ const initialize = (options, report = null) => {
     return rb;
 };
 const emptyOptions = {styles: [], parameters: [], docElements: [], watermarks: []};
-const loadFromApi = (lang, project, id) => {
+const loadFromApi = (lang, project, key, id) => {
     fetchTemplate(id).then((response) => {
         let rb;
         if (response.data) {
@@ -27,12 +27,7 @@ const loadFromApi = (lang, project, id) => {
                 saveCallback: function () {
                     console.log('Saved report', project, id, rb.getReport());
                     saveTemplate({
-                        id,
-                        name: report.name,
-                        key: report.key,
-                        filter: report.filter,
-                        project: report.project,
-                        module: report.module,
+                        id: id,
                         report: rb.getReport()
                     }).then((response) => {
                         if (response.data) {
@@ -49,6 +44,8 @@ const loadFromApi = (lang, project, id) => {
                 localeKey: lang === 'zh' ? 'zh_cn' : 'en_us',
             }
             rb = initialize(reportBroOptions, report);
+        } else {
+            initialize({});
         }
     }).catch(function (err) {
         console.log(err);
@@ -87,9 +84,10 @@ const loadFromStorage = (lang) => {
     const url = new URL(window.location.href);
     const project = url.searchParams.get('project');
     const id = url.searchParams.get('id');
+    const key = url.searchParams.get('key');
     const lang = url.searchParams.get('lang');
-    if (project && id) {
-        loadFromApi(lang, project, id);
+    if (project && (key || id)) {
+        loadFromApi(lang, project, key, id);
     } else {
         loadFromStorage(lang);
     }
