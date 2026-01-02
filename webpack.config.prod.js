@@ -44,6 +44,7 @@ module.exports = merge(common, {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: 'index.html',
+      hash: true,
     }),
   ]
 });
