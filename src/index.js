@@ -38,7 +38,8 @@ const loadFromApi = (lang, project, key, id) => {
                     }).then(() => {
                         rb.setModified(false);
                     }).catch((error) => {
-                        console.log(error); //todo throw error
+                        console.log(error);
+                        alert('Error fetch init data');
                     });
                 },
                 localeKey: lang === 'zh' ? 'zh_cn' : 'en_us',
@@ -47,9 +48,13 @@ const loadFromApi = (lang, project, key, id) => {
         } else {
             initialize({});
         }
-    }).catch(function (err) {
-        console.log(err);
-        alert('Error fetch init data');
+    }).catch(function (error) {
+        console.log(error);
+        if (error?.response?.data?.detail) {
+            alert(error?.response?.data?.detail)
+        } else {
+            alert('Error fetch init data');
+        }
         initialize({});
     });
 };
