@@ -22,6 +22,7 @@ const loadFromApi = (lang, project, key, id) => {
                 adminMode: false,
                 additionalFonts: [
                     { name: '微软雅黑', value: 'MicrosoftYaHei'},
+                    { name: 'Arial', value: 'Arial' },
                 ],
                 // additionalFonts: [ { name: 'Tangerine', value: 'tangerine'}, { name: 'Lobster', value: 'lobster'} ],
                 saveCallback: function () {
@@ -70,6 +71,7 @@ const loadFromStorage = (lang) => {
             adminMode: true,
             additionalFonts: [
                 { name: '微软雅黑', value: 'MicrosoftYaHei'},
+                { name: 'Arial', value: 'Arial' },
             ],
             // additionalFonts: [ { name: 'Tangerine', value: 'tangerine'}, { name: 'Lobster', value: 'lobster'} ],
             saveCallback: function () {
