@@ -23,6 +23,7 @@ const loadFromApi = (lang, project, key, id) => {
                 additionalFonts: [
                     { name: '微软雅黑', value: 'MicrosoftYaHei'},
                     { name: 'Arial', value: 'Arial' },
+                    { name: 'SegoeUIEmoji', value: 'SegoeUIEmoji' },
                 ],
                 // additionalFonts: [ { name: 'Tangerine', value: 'tangerine'}, { name: 'Lobster', value: 'lobster'} ],
                 saveCallback: function () {
