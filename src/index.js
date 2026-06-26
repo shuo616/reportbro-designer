@@ -11,7 +11,7 @@ const initialize = (options, report = null) => {
     return rb;
 };
 const emptyOptions = {styles: [], parameters: [], docElements: [], watermarks: []};
-const loadFromApi = (lang, project, key, id) => {
+const loadFromApi = (lang, project, key, id, adminMode) => {
     fetchTemplate(id).then((response) => {
         let rb;
         if (response.data) {
@@ -19,7 +19,7 @@ const loadFromApi = (lang, project, key, id) => {
             const reportBroOptions = {
                 reportServerUrl: `${baseURL}/report/run`,
                 menuShowButtonLabels: true,
-                adminMode: false,
+                adminMode,
                 additionalFonts: [
                     { name: '微软雅黑', value: 'MicrosoftYaHei'},
                     { name: 'Arial', value: 'Arial' },
@@ -94,8 +94,9 @@ const loadFromStorage = (lang) => {
     const id = url.searchParams.get('id');
     const key = url.searchParams.get('key');
     const lang = url.searchParams.get('lang');
+    const adminMode = url.searchParams.get('mode') === 'admin';
     if (project && (key || id)) {
-        loadFromApi(lang, project, key, id);
+        loadFromApi(lang, project, key, id, adminMode);
     } else {
         loadFromStorage(lang);
     }
